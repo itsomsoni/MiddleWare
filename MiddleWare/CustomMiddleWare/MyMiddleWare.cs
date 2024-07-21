@@ -1,4 +1,6 @@
 ﻿
+using System.Runtime.CompilerServices;
+
 namespace MiddleWare.CustomMiddleWare
 {
     public class MyMiddleWare : IMiddleware
@@ -7,6 +9,13 @@ namespace MiddleWare.CustomMiddleWare
         {
             await context.Response.WriteAsync("My Custom MiddleWare Has Runned.\n");
             await next(context);
+        }
+    }
+    public static class CustomMiddleWareExtension
+    {
+        public static IApplicationBuilder MyMiddleWare(this IApplicationBuilder app)
+        {
+            return app.UseMiddleware<MyMiddleWare>();
         }
     }
 }
