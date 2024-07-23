@@ -5,7 +5,40 @@ builder.Services.AddTransient<MyMiddleWare>();
 
 var app = builder.Build();
 
-//app.MapGet("/", () => "Hello World!");
+app.UseRouting();
+
+app.Use(async (context, next) =>
+{
+    Endpoint endpoint = context.GetEndpoint();
+    if (endpoint != null)
+        await context.Response.WriteAsync(endpoint.DisplayName + Environment.NewLine);
+    await next(context);
+});
+
+app.UseEndpoints(endpoints =>
+{
+    _ = endpoints.Map("/Home", async (context) =>
+    {
+        await context.Response.WriteAsync("You Are In Home Page.");
+    });
+
+    _ = endpoints.MapGet("/Product", async (context) =>
+    {
+        await context.Response.WriteAsync("You Are In Product Page With Get Method.");
+    });
+    _ = endpoints.MapPost("/Product", async (context) =>
+    {
+        await context.Response.WriteAsync("You Are In Product Page With Post Method.");
+    });
+});
+
+app.Run(async (context) =>
+{
+    context.Response.StatusCode = 404;
+    await context.Response.WriteAsync("Requested Page Not Found.");
+});
+
+/*//app.MapGet("/", () => "Hello World!");
 
 app.Use(async (HttpContext context, RequestDelegate next) =>
 {
@@ -41,6 +74,6 @@ Convert.ToBoolean(context.Request.Query["IsAuthorized"]) == true, app =>
 app.Run(async (HttpContext context) =>
 {
     await context.Response.WriteAsync("This Is MiddleWare - 3\n");
-});
+});*/
 
 app.Run();
