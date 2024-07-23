@@ -9,7 +9,7 @@ app.UseRouting();
 
 app.Use(async (context, next) =>
 {
-    Endpoint endpoint = context.GetEndpoint();
+    Endpoint? endpoint = context.GetEndpoint();
     if (endpoint != null)
         await context.Response.WriteAsync(endpoint.DisplayName + Environment.NewLine);
     await next(context);
