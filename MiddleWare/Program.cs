@@ -14,8 +14,19 @@ app.Use(async (HttpContext context, RequestDelegate next) =>
 });
 //custom middleware
 //app.UseMiddleware<MyMiddleWare>();
-app.MyMiddleWare();
-app.UseAnotherCustomMiddleware();
+//app.MyMiddleWare();
+//app.UseAnotherCustomMiddleware();
+
+app.UseWhen(context => context.Request.Query.ContainsKey("IsAuthorized")
+&& Convert.ToBoolean(context.Request.Query["IsAuthorized"]) == true,
+    app =>
+    {
+        app.Use(async (context, next) =>
+        {
+            await context.Response.WriteAsync("Conditional MiddleWare Called.\n\n");
+            await next(context);
+        });
+    });
 
 app.UseWhen(context => context.Request.Query.ContainsKey("IsAuthorized") &&
 Convert.ToBoolean(context.Request.Query["IsAuthorized"]) == true, app =>
