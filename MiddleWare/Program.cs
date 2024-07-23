@@ -17,16 +17,16 @@ app.Use(async (context, next) =>
 
 app.UseEndpoints(endpoints =>
 {
-    _ = endpoints.MapGet("/Product/{id?}", async (context) =>
+    _ = endpoints.MapGet("/Product/{id:int}", async (context) =>
     {
-        var Id = context.Request.RouteValues["id"];
-        if (Id != null)
-            await context.Response.WriteAsync($"This is product with ID: {Convert.ToInt32(Id)}");
+        int Id = Convert.ToInt32(context.Request.RouteValues["id"]);
+        if (Id != 0)
+            await context.Response.WriteAsync($"This is product with ID: {Id}");
         else
             await context.Response.WriteAsync($"Wrong Request Fired.");
     });
 
-    _ = endpoints.MapGet("/books/author/{authorname}/{bookid?}", async (context) =>
+    _ = endpoints.MapGet("/books/author/{authorname:alpha}/{bookid:int?}", async (context) =>
     {
         var BookId = (context.Request.RouteValues["bookid"]);
         var AuthorName = (context.Request.RouteValues["authorname"]);
