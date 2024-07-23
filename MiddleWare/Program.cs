@@ -17,17 +17,28 @@ app.Use(async (context, next) =>
 
 app.UseEndpoints(endpoints =>
 {
-    _ = endpoints.MapGet("/Product/{id=101}", async (context) =>
+    _ = endpoints.MapGet("/Product/{id?}", async (context) =>
     {
-        int Id = Convert.ToInt32(context.Request.RouteValues["id"]);
-        await context.Response.WriteAsync($"This is product with ID: {Id}");
+        var Id = context.Request.RouteValues["id"];
+        if (Id != null)
+            await context.Response.WriteAsync($"This is product with ID: {Convert.ToInt32(Id)}");
+        else
+            await context.Response.WriteAsync($"Wrong Request Fired.");
     });
 
-    _ = endpoints.MapGet("/books/author/{authorname}/{bookid=101}", async (context) =>
+    _ = endpoints.MapGet("/books/author/{authorname}/{bookid?}", async (context) =>
     {
-        int BookId = Convert.ToInt32(context.Request.RouteValues["bookid"]);
-        string? AuthorName = Convert.ToString(context.Request.RouteValues["authorname"]);
-        await context.Response.WriteAsync($"Author Name: {AuthorName} & BookId: {BookId}");
+        var BookId = (context.Request.RouteValues["bookid"]);
+        var AuthorName = (context.Request.RouteValues["authorname"]);
+
+        if (BookId != null)
+        {
+            await context.Response.WriteAsync($"Author Name: {AuthorName} & BookId: {BookId}");
+        }
+        else
+        {
+            await context.Response.WriteAsync($"Following Are the book by Author Name: {AuthorName}.");
+        }
     });
 });
 
