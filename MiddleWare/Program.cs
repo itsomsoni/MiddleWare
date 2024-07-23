@@ -17,6 +17,22 @@ app.Use(async (context, next) =>
 
 app.UseEndpoints(endpoints =>
 {
+    _ = endpoints.MapGet("/Product/{id=101}", async (context) =>
+    {
+        int Id = Convert.ToInt32(context.Request.RouteValues["id"]);
+        await context.Response.WriteAsync($"This is product with ID: {Id}");
+    });
+
+    _ = endpoints.MapGet("/books/author/{authorname}/{bookid=101}", async (context) =>
+    {
+        int BookId = Convert.ToInt32(context.Request.RouteValues["bookid"]);
+        string? AuthorName = Convert.ToString(context.Request.RouteValues["authorname"]);
+        await context.Response.WriteAsync($"Author Name: {AuthorName} & BookId: {BookId}");
+    });
+});
+
+/*app.UseEndpoints(endpoints =>
+{
     _ = endpoints.Map("/Home", async (context) =>
     {
         await context.Response.WriteAsync("You Are In Home Page.");
@@ -30,7 +46,7 @@ app.UseEndpoints(endpoints =>
     {
         await context.Response.WriteAsync("You Are In Product Page With Post Method.");
     });
-});
+});*/
 
 app.Run(async (context) =>
 {
