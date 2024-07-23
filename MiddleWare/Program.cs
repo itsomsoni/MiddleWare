@@ -26,7 +26,7 @@ app.UseEndpoints(endpoints =>
             await context.Response.WriteAsync($"Wrong Request Fired.");
     });
 
-    _ = endpoints.MapGet("/books/author/{authorname:alpha}/{bookid:int?}", async (context) =>
+    _ = endpoints.MapGet("/books/author/{authorname:alpha:length(6)}/{bookid:int?}", async (context) =>
     {
         var BookId = (context.Request.RouteValues["bookid"]);
         var AuthorName = (context.Request.RouteValues["authorname"]);
