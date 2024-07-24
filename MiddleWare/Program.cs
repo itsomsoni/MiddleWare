@@ -1,7 +1,13 @@
+using Microsoft.Extensions.FileProviders;
 using MiddleWare.CustomMiddleWare;
 using MiddleWare.CustomRouting;
 
-var builder = WebApplication.CreateBuilder(args);
+//var builder = WebApplication.CreateBuilder(args);
+
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions()
+{
+    WebRootPath = "StaticFiles"
+});
 
 builder.Services.AddTransient<MyMiddleWare>();
 
@@ -12,6 +18,13 @@ builder.Services.AddRouting(options =>
 
 var app = builder.Build();
 
+app.UseStaticFiles();
+
+// Content Root Path.
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(Path.Combine(builder.Environment.ContentRootPath, "MyWebRoot"))
+});
 app.UseRouting();
 
 app.Use(async (context, next) =>
@@ -24,7 +37,7 @@ app.Use(async (context, next) =>
 
 app.UseEndpoints(endpoints =>
 {
-    _ = endpoints.MapGet("/Product/{id:int}", async (context) =>
+    _ = endpoints.MapGet("/Product/{id:int=1}", async (context) =>
     {
         int Id = Convert.ToInt32(context.Request.RouteValues["id"]);
         if (Id != 0)
@@ -92,6 +105,7 @@ app.Run(async (context) =>
     context.Response.StatusCode = 404;
     await context.Response.WriteAsync("Requested Page Not Found.");
 });
+
 
 /*//app.MapGet("/", () => "Hello World!");
 
