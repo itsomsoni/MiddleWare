@@ -40,6 +40,21 @@ app.UseEndpoints(endpoints =>
             await context.Response.WriteAsync($"Following Are the book by Author Name: {AuthorName}.");
         }
     });
+
+    _ = endpoints.MapGet(pattern: "/Quartely-Rpoert/{year:min(1999):minlength(4)}/{month:regex(^(mar|jun|sep|dec)$)}", async (context) =>
+    {
+        int year = Convert.ToInt32(context.Request.RouteValues["year"]);
+        string? month = Convert.ToString(context.Request.RouteValues["month"]);
+
+        await context.Response.WriteAsync($"Report Dated: {year}-{month}");
+    });
+
+    _ = endpoints.MapGet(pattern: "/Monthly-Report/{month:int:regex(^([1-9]|1[012])$)}/{year:int:min(1999):minlength(4)}", async (context) =>
+    {
+        int month = Convert.ToInt32(context.Request.RouteValues["month"]);
+        int year = Convert.ToInt32(context.Request.RouteValues["year"]);
+        await context.Response.WriteAsync($"Monthly Report Dated: {month}-{year}");
+    });
 });
 
 /*app.UseEndpoints(endpoints =>
