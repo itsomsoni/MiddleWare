@@ -1,7 +1,14 @@
 using MiddleWare.CustomMiddleWare;
+using MiddleWare.CustomRouting;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Services.AddTransient<MyMiddleWare>();
+
+builder.Services.AddRouting(options =>
+{
+    options.ConstraintMap.Add("alphanumeric", typeof(AlphaNumericConstraint));
+});
 
 var app = builder.Build();
 
@@ -54,6 +61,12 @@ app.UseEndpoints(endpoints =>
         int month = Convert.ToInt32(context.Request.RouteValues["month"]);
         int year = Convert.ToInt32(context.Request.RouteValues["year"]);
         await context.Response.WriteAsync($"Monthly Report Dated: {month}-{year}");
+    });
+
+    _ = endpoints.MapGet(pattern: "/User/{username:alphanumeric}", async (context) =>
+    {
+        string? UserName = Convert.ToString(context.Request.RouteValues["username"]);
+        await context.Response.WriteAsync($"Welcome {UserName}");
     });
 });
 
